@@ -1,0 +1,25 @@
+import type { ProductFilters } from '@/types';
+
+export const queryKeys = {
+  products: (filters: ProductFilters) => ['products', filters] as const,
+  allProducts: ['products', 'all'] as const,
+  product: (slug: string) => ['product', slug] as const,
+  productById: (id: string) => ['product', 'id', id] as const,
+  relatedProducts: (id: string) => ['products', 'related', id] as const,
+  categories: ['categories'] as const,
+  facets: ['catalog', 'facets'] as const,
+  collections: ['collections'] as const,
+  collection: (slug: string) => ['collection', slug] as const,
+  shippingMethods: ['shipping-methods'] as const,
+  orders: (customerId: string) => ['orders', customerId] as const,
+  order: (orderId: string) => ['order', orderId] as const,
+  addresses: (customerId: string) => ['addresses', customerId] as const,
+  adminDashboard: ['admin', 'dashboard'] as const,
+  adminProducts: ['admin', 'products'] as const,
+  adminProduct: (id: string) => ['admin', 'product', id] as const,
+  adminCategories: ['admin', 'categories'] as const,
+  adminInventory: ['admin', 'inventory'] as const,
+  adminOrders: ['admin', 'orders'] as const,
+  adminCustomers: ['admin', 'customers'] as const,
+  adminPromotions: ['admin', 'promotions'] as const,
+};
