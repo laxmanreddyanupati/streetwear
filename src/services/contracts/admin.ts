@@ -1,5 +1,6 @@
 import type {
   Category,
+  Collection,
   Customer,
   DashboardStats,
   InventoryRecord,
@@ -53,6 +54,22 @@ export interface AdminPromotionInput {
   active: boolean;
 }
 
+export interface AdminCollectionInput {
+  id?: string;
+  name: string;
+  slug: string;
+  tagline: string;
+  description: string;
+  story?: string;
+  imageUrl: string;
+  additionalImages?: string[];
+  productIds: string[];
+  sortOrder: number;
+  status: 'draft' | 'published' | 'archived';
+  publishedAt?: string;
+  unpublishedAt?: string;
+}
+
 export interface AdminService {
   getDashboard(): Promise<DashboardStats>;
   listProducts(): Promise<Product[]>;
@@ -68,4 +85,9 @@ export interface AdminService {
   listPromotions(): Promise<Promotion[]>;
   upsertPromotion(input: AdminPromotionInput): Promise<Promotion>;
   togglePromotion(promotionId: string, active: boolean): Promise<Promotion>;
+  listCollections(): Promise<Collection[]>;
+  getCollection(slug: string): Promise<Collection | null>;
+  upsertCollection(input: AdminCollectionInput): Promise<Collection>;
+  deleteCollection(id: string): Promise<void>;
+  reorderCollections(ids: string[]): Promise<void>;
 }

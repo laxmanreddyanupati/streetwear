@@ -161,11 +161,13 @@ export const catalogService: CatalogService = {
 
   async listCollections() {
     await simulateLatency(80);
-    return [...db.collections];
+    return [...db.collections]
+      .filter((c) => c.status === 'published')
+      .sort((a, b) => a.sortOrder - b.sortOrder);
   },
 
   async getCollection(slug) {
     await simulateLatency(80);
-    return db.collections.find((collection) => collection.slug === slug) ?? null;
+    return db.collections.find((collection) => collection.slug === slug && collection.status === 'published') ?? null;
   },
 };

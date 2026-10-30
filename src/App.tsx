@@ -31,6 +31,7 @@ import { AdminOrdersPage } from '@/pages/admin/AdminOrdersPage';
 import { AdminCustomersPage } from '@/pages/admin/AdminCustomersPage';
 import { AdminPromotionsPage } from '@/pages/admin/AdminPromotionsPage';
 import { AdminCategoriesPage } from '@/pages/admin/AdminCategoriesPage';
+import { AdminCollectionsPage } from '@/pages/admin/AdminCollectionsPage';
 
 export function App() {
   return (
@@ -82,6 +83,7 @@ export function App() {
           <Route path="customers" element={<AdminCustomersPage />} />
           <Route path="promotions" element={<AdminPromotionsPage />} />
           <Route path="categories" element={<AdminCategoriesPage />} />
+          <Route path="collections" element={<AdminCollectionsPage />} />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Route>

@@ -2,6 +2,7 @@ import { NavLink, Outlet, Link } from 'react-router-dom';
 import {
   BarChart3,
   Boxes,
+  FolderOpen,
   FolderTree,
   LayoutDashboard,
   LogOut,
@@ -17,6 +18,7 @@ const navItems = [
   { label: 'Products', to: '/admin/products', icon: Package, end: false },
   { label: 'Inventory', to: '/admin/inventory', icon: Boxes, end: false },
   { label: 'Categories', to: '/admin/categories', icon: FolderTree, end: false },
+  { label: 'Collections', to: '/admin/collections', icon: FolderOpen, end: false },
   { label: 'Orders', to: '/admin/orders', icon: BarChart3, end: false },
   { label: 'Customers', to: '/admin/customers', icon: Users, end: false },
   { label: 'Promotions', to: '/admin/promotions', icon: Percent, end: false },

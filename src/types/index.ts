@@ -94,6 +94,22 @@ export interface Collection {
   description: string;
   imageUrl: string;
   featured: boolean;
+  /** Optional editorial story shown on the collection detail page. */
+  story?: string;
+  /** Additional images for the collection gallery. */
+  additionalImages?: string[];
+  /** Product IDs that belong to this collection (used for admin assignment). */
+  productIds: string[];
+  /** Display order — lower numbers appear first. */
+  sortOrder: number;
+  /** Lifecycle status. Public pages only show 'published' collections. */
+  status: 'draft' | 'published' | 'archived';
+  createdAt: IsoDateString;
+  updatedAt: IsoDateString;
+  /** ISO timestamp when the collection was made public. */
+  publishedAt?: IsoDateString;
+  /** ISO timestamp when the collection was taken offline. */
+  unpublishedAt?: IsoDateString;
 }
 
 export interface InventoryRecord {
@@ -191,7 +207,28 @@ export type OrderStatus =
   | 'delivered'
   | 'cancelled';
 
-export type PaymentStatus = 'demo_pending' | 'demo_authorised' | 'refunded';
+export type PaymentStatus =
+  | 'pending'
+  | 'authorised'
+  | 'paid'
+  | 'failed'
+  | 'refunded'
+  | 'demo_pending'
+  | 'demo_authorised';
+
+export interface RazorpayOrderResponse {
+  razorpayOrderId: string;
+  amount: number; // in paise
+  currency: string;
+  keyId: string; // public key only
+  orderId: string; // internal order ID
+}
+
+export interface RazorpayPaymentResult {
+  razorpay_payment_id: string;
+  razorpay_order_id: string;
+  razorpay_signature: string;
+}
 
 export interface ShippingMethod {
   id: string;

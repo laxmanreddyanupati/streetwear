@@ -1,5 +1,6 @@
 import type {
   Category,
+  Collection,
   DashboardStats,
   InventoryRecord,
   OrderStatus,
@@ -9,6 +10,7 @@ import type {
 } from '@/types';
 import type {
   AdminCategoryInput,
+  AdminCollectionInput,
   AdminProductInput,
   AdminPromotionInput,
   AdminService,
@@ -276,6 +278,81 @@ export const adminService: AdminService = {
     if (!promotion) throw new Error('Promotion not found.');
     promotion.active = active;
     return promotion;
+  },
+
+  async listCollections() {
+    await simulateLatency(80);
+    return [...db.collections].sort((a, b) => a.sortOrder - b.sortOrder);
+  },
+
+  async getCollection(slug) {
+    await simulateLatency(80);
+    return db.collections.find((c) => c.slug === slug) ?? null;
+  },
+
+  async upsertCollection(input: AdminCollectionInput) {
+    await simulateLatency(180);
+    const name = input.name.trim();
+    if (!name) throw new Error('Collection name is required.');
+    const slug = input.slug.trim();
+    if (!slug) throw new Error('Collection slug is required.');
+
+    // Validate slug uniqueness — skip the record being updated
+    const slugConflict = db.collections.find((c) => c.slug === slug && c.id !== input.id);
+    if (slugConflict) throw new Error(`Slug "${slug}" is already used by "${slugConflict.name}".`);
+
+    const now = new Date().toISOString();
+    const existing = input.id ? db.collections.find((c) => c.id === input.id) : undefined;
+
+    const publishedAt =
+      input.status === 'published'
+        ? (existing?.publishedAt ?? input.publishedAt ?? now)
+        : existing?.publishedAt ?? input.publishedAt;
+
+    const unpublishedAt =
+      input.status === 'archived'
+        ? (existing?.unpublishedAt ?? input.unpublishedAt ?? now)
+        : existing?.unpublishedAt ?? input.unpublishedAt;
+
+    const collection: Collection = {
+      id: existing?.id ?? createId('col'),
+      slug,
+      name,
+      tagline: input.tagline.trim(),
+      description: input.description.trim(),
+      story: input.story?.trim(),
+      imageUrl: input.imageUrl || '/images/collection-essentials.jpg',
+      additionalImages: input.additionalImages,
+      featured: existing?.featured ?? false,
+      productIds: input.productIds,
+      sortOrder: input.sortOrder,
+      status: input.status,
+      createdAt: existing?.createdAt ?? now,
+      updatedAt: now,
+      publishedAt,
+      unpublishedAt,
+    };
+
+    const index = db.collections.findIndex((item) => item.id === collection.id);
+    if (index >= 0) db.collections[index] = collection;
+    else db.collections.push(collection);
+    return collection;
+  },
+
+  async deleteCollection(id) {
+    await simulateLatency(120);
+    const index = db.collections.findIndex((c) => c.id === id);
+    if (index < 0) throw new Error('Collection not found.');
+    // Does NOT delete products — only removes the collection record
+    db.collections.splice(index, 1);
+  },
+
+  async reorderCollections(ids) {
+    await simulateLatency(100);
+    ids.forEach((id, idx) => {
+      const collection = db.collections.find((c) => c.id === id);
+      if (collection) collection.sortOrder = idx + 1;
+    });
   },
 };
 
